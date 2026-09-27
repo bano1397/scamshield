@@ -1,0 +1,220 @@
+[
+  {
+    "id": "bank",
+    "title": "Fake bank \u2014 asks for OTP",
+    "expect": "scam",
+    "lines": [
+      [
+        "caller",
+        "Hello, am I speaking with Mrs. Margaret Collins?"
+      ],
+      [
+        "user",
+        "Yes, this is Margaret. Who is calling?"
+      ],
+      [
+        "caller",
+        "Good afternoon. This is David from the fraud department at your bank. We noticed a suspicious transaction of nine hundred dollars on your account."
+      ],
+      [
+        "user",
+        "Oh dear, I didn't make any payment like that."
+      ],
+      [
+        "caller",
+        "Don't worry, that's why I'm calling. Your account has been locked for your protection. We need to verify you right now before the payment goes through."
+      ],
+      [
+        "user",
+        "Alright, what do you need?"
+      ],
+      [
+        "caller",
+        "We just sent a six digit code to your phone. Please read me the code so I can cancel the transaction immediately."
+      ],
+      [
+        "user",
+        "Let me find my phone. It says four, seven..."
+      ],
+      [
+        "caller",
+        "Yes, go on. And please stay on the line, don't hang up or the money will be lost."
+      ]
+    ]
+  },
+  {
+    "id": "irs",
+    "title": "Fake tax office \u2014 arrest threat",
+    "expect": "scam",
+    "lines": [
+      [
+        "caller",
+        "This is officer James Miller calling from the tax department. Is this Robert?"
+      ],
+      [
+        "user",
+        "Yes, speaking."
+      ],
+      [
+        "caller",
+        "Robert, our records show you owe four thousand dollars in unpaid taxes. There is a warrant for your arrest."
+      ],
+      [
+        "user",
+        "What? I always pay my taxes."
+      ],
+      [
+        "caller",
+        "If you do not pay within the next hour, police will come to your house today."
+      ],
+      [
+        "user",
+        "How am I supposed to pay that fast?"
+      ],
+      [
+        "caller",
+        "You can settle it with Google Play gift cards. Buy them at any store and read me the numbers on the back. Do not tell anyone about this case."
+      ]
+    ]
+  },
+  {
+    "id": "grandson",
+    "title": "Grandchild in trouble \u2014 bail money",
+    "expect": "scam",
+    "lines": [
+      [
+        "caller",
+        "Grandma? Grandma, it's me, your grandson."
+      ],
+      [
+        "user",
+        "Tommy? Is that you? You sound different."
+      ],
+      [
+        "caller",
+        "I have a cold. Grandma, I'm in trouble. I was in a car accident and the police arrested me."
+      ],
+      [
+        "user",
+        "Oh my goodness, are you hurt?"
+      ],
+      [
+        "caller",
+        "I'm okay, but I need bail money, two thousand dollars. My lawyer says you can send it by Western Union."
+      ],
+      [
+        "user",
+        "Should I call your mother?"
+      ],
+      [
+        "caller",
+        "No, please don't tell mom and dad. Keep this between us, okay? I need it right now."
+      ]
+    ]
+  },
+  {
+    "id": "techsupport",
+    "title": "Fake tech support \u2014 remote access",
+    "expect": "scam",
+    "lines": [
+      [
+        "caller",
+        "Hello, I'm calling from Microsoft Windows support. Your computer has sent us an error report."
+      ],
+      [
+        "user",
+        "Really? What kind of error?"
+      ],
+      [
+        "caller",
+        "Your computer is infected with a dangerous virus and hackers are stealing your files as we speak."
+      ],
+      [
+        "user",
+        "That sounds bad. What should I do?"
+      ],
+      [
+        "caller",
+        "I will fix it for you. Please download the AnyDesk app so I can get remote access to your computer."
+      ],
+      [
+        "user",
+        "Okay, I'm opening the browser."
+      ],
+      [
+        "caller",
+        "Good. After that, log in to your online banking so I can check that the hackers didn't take your money."
+      ]
+    ]
+  },
+  {
+    "id": "dentist",
+    "title": "Real call \u2014 dentist reminder",
+    "expect": "safe",
+    "lines": [
+      [
+        "caller",
+        "Hi, this is Sarah from Bright Smile Dental. Am I speaking with Mr. Ahmed?"
+      ],
+      [
+        "user",
+        "Yes, hi Sarah."
+      ],
+      [
+        "caller",
+        "I'm just calling to remind you about your cleaning appointment on Thursday at ten in the morning."
+      ],
+      [
+        "user",
+        "Oh right, thank you. Thursday works for me."
+      ],
+      [
+        "caller",
+        "Great. Please bring your insurance card, and arrive ten minutes early to fill in a short form."
+      ],
+      [
+        "user",
+        "Sure, I'll be there. Is there parking?"
+      ],
+      [
+        "caller",
+        "Yes, there is free parking behind the building. See you on Thursday, have a nice day."
+      ]
+    ]
+  },
+  {
+    "id": "family",
+    "title": "Real call \u2014 son talks bank & codes",
+    "expect": "safe",
+    "lines": [
+      [
+        "caller",
+        "Hi Mum, it's Ali. I'm at the bank now, sorting out the car loan."
+      ],
+      [
+        "user",
+        "Oh good. Did they help you?"
+      ],
+      [
+        "caller",
+        "Yes. I'll transfer the money for your rent tonight, so don't worry about it."
+      ],
+      [
+        "user",
+        "Thank you, beta. My phone got a code this morning, is that from you?"
+      ],
+      [
+        "caller",
+        "No, that's the bank app on your phone. Never read that code to anyone, even me."
+      ],
+      [
+        "user",
+        "Okay. And I forgot my email password again."
+      ],
+      [
+        "caller",
+        "No problem, I'll help you reset it when I visit on Sunday. Love you, Mum."
+      ]
+    ]
+  }
+]

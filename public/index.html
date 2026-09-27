@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ScamShield — warns you about phone scams mid-call</title>
+  <meta name="description" content="A live voice agent that listens to a phone call on speaker, spots scam tactics in real time with AssemblyAI Universal-Streaming, and speaks up before you share a code or send money." />
+  <meta name="theme-color" content="#070b16" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body data-level="idle">
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 32 32" class="brand-mark" aria-hidden="true"><defs><linearGradient id="bm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#818cf8"/></linearGradient></defs><path d="M16 2 4 6.5v8.2C4 22.3 9.1 28.2 16 30c6.9-1.8 12-7.7 12-15.3V6.5z" fill="url(#bm)"/><path d="M11 16.5h2l1.5-4 3 8 1.5-4h2" fill="none" stroke="#070b16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>ScamShield</span>
+    </a>
+    <nav class="nav">
+      <a href="#console">Live console</a>
+      <a href="#demos">Demo calls</a>
+      <a href="#how">How it works</a>
+    </nav>
+    <div class="status-pills">
+      <span class="pill" id="pill-stt"><i></i>Speech</span>
+      <span class="pill" id="pill-ai"><i></i>AI brain</span>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-copy reveal">
+        <span class="eyebrow"><span class="dot"></span>Real-time voice agent · built on AssemblyAI</span>
+        <h1>The voice agent that <span class="grad">warns you about scams</span> mid-call.</h1>
+        <p class="lead">Put a suspicious call on speaker. ScamShield listens live, spots scam tactics the moment they're spoken, and <strong>speaks up</strong> before anyone reads out a code or sends money.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="hero-live">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg>
+            Protect a live call
+          </button>
+          <a class="btn btn-ghost" href="#demos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg>
+            Play a demo scam call
+          </a>
+        </div>
+        <ul class="hero-stats">
+          <li><b>0</b><span>recordings or transcripts kept by ScamShield</span></li>
+          <li><b>~0.6s</b><span>from spoken words to red flag (measured)</span></li>
+          <li><b>12</b><span>scam tactics tracked live</span></li>
+        </ul>
+      </div>
+      <div class="hero-visual reveal" aria-hidden="true">
+        <div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div>
+        <svg class="hero-shield" viewBox="0 0 200 220">
+          <defs>
+            <linearGradient id="hs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset=".55" stop-color="#818cf8"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+            <radialGradient id="hsf" cx=".5" cy=".35" r=".7"><stop offset="0" stop-color="#1e2a4a"/><stop offset="1" stop-color="#0b1122"/></radialGradient>
+          </defs>
+          <path class="shield-fill" d="M100 10 20 40v58c0 52 34 94 80 110 46-16 80-58 80-110V40z" fill="url(#hsf)"/>
+          <path class="shield-line" d="M100 10 20 40v58c0 52 34 94 80 110 46-16 80-58 80-110V40z" fill="none" stroke="url(#hs)" stroke-width="4"/>
+          <g class="hero-bars">
+            <rect x="58" y="96" width="8" height="28" rx="4"/><rect x="74" y="84" width="8" height="52" rx="4"/><rect x="90" y="70" width="8" height="80" rx="4"/>
+            <rect x="106" y="80" width="8" height="60" rx="4"/><rect x="122" y="90" width="8" height="40" rx="4"/><rect x="138" y="100" width="8" height="20" rx="4"/>
+          </g>
+        </svg>
+        <div class="float-chip c1"><i class="chip-red"></i>“Read me the code…”</div>
+        <div class="float-chip c2"><i class="chip-amber"></i>Urgency detected</div>
+        <div class="float-chip c3"><i class="chip-green"></i>Speaking up now</div>
+      </div>
+    </section>
+
+    <!-- CONSOLE -->
+    <section class="console" id="console">
+      <div class="panel gauge-panel">
+        <div class="panel-head">
+          <h2>Scam risk</h2>
+          <span class="source-tag" id="source-tag">Idle</span>
+        </div>
+        <div class="gauge-wrap">
+          <div class="gauge-pulse"></div>
+          <svg class="gauge" viewBox="0 0 220 220" aria-hidden="true">
+            <defs>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <circle class="g-track" cx="110" cy="110" r="90"/>
+            <circle class="g-ticks" cx="110" cy="110" r="102"/>
+            <circle class="g-arc" id="g-arc" cx="110" cy="110" r="90" filter="url(#glow)"/>
+          </svg>
+          <div class="gauge-center">
+            <div class="g-num" id="g-num" aria-live="polite">0</div>
+            <div class="g-verdict" id="g-verdict">Ready</div>
+          </div>
+        </div>
+        <p class="reason" id="reason">Start a live call or play a demo. ScamShield will explain what it hears.</p>
+        <canvas class="wave" id="wave" height="56"></canvas>
+        <div class="controls">
+          <button class="btn btn-primary" id="btn-live">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg>
+            <span>Start protecting</span>
+          </button>
+          <button class="btn btn-ghost" id="btn-ask" disabled title="Ask ScamShield about this call">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5M12 16.5h.01"/></svg>
+            <span>“Is this real?”</span>
+          </button>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="ai-toggle" checked />
+          <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+          <span class="switch-text"><b>Deeper AI check</b><small>Sends transcript text (never audio) to Google Gemini, which may keep it on the free tier. Off = on-device rules only.</small></span>
+        </label>
+        <p class="hint">During a live call, just say <em>“ScamShield, is this real?”</em></p>
+      </div>
+
+      <div class="panel transcript-panel">
+        <div class="panel-head">
+          <h2>Live transcript</h2>
+          <span class="head-right"><span class="timer" id="timer">00:00</span><button class="link-btn" id="btn-clear" type="button">Clear</button></span>
+        </div>
+        <div class="transcript" id="transcript" aria-live="polite">
+          <div class="empty" id="empty">
+            <div class="empty-rings"><span></span><span></span><span></span></div>
+            <p>Waiting for the call…</p>
+            <small>Words appear here live as AssemblyAI hears them. Red flags light up instantly.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel tactics-panel">
+        <div class="panel-head">
+          <h2>Scam tactics</h2>
+          <span class="muted" id="tactic-count"></span>
+        </div>
+        <div class="tactics" id="tactics"></div>
+      </div>
+    </section>
+
+    <!-- DEMOS -->
+    <section class="demos" id="demos">
+      <div class="section-head reveal">
+        <span class="eyebrow">Try it in 30 seconds</span>
+        <h2>Play a real-sounding call</h2>
+        <p>Each call streams through the same live AssemblyAI pipeline as a microphone. One of them is a genuine call — watch ScamShield stay calm.</p>
+      </div>
+      <div class="demo-grid" id="demo-grid"></div>
+    </section>
+
+    <!-- HOW -->
+    <section class="how" id="how">
+      <div class="section-head reveal">
+        <span class="eyebrow">Under the hood</span>
+        <h2>Listen → understand → decide → speak</h2>
+      </div>
+      <ol class="steps">
+        <li class="reveal"><span class="step-n">01</span><h3>Streams the call</h3><p>Audio is resampled to 16 kHz PCM in the browser and streamed in 50 ms chunks to <b>AssemblyAI Universal-Streaming</b>, with keyterm prompting for scam words like “OTP” and “AnyDesk”.</p></li>
+        <li class="reveal"><span class="step-n">02</span><h3>Instant rule layer</h3><p>Every partial transcript is checked for who is asking for what — a code, a PIN, remote access, gift cards, money under pressure — in under a millisecond, while the caller is still talking. Normal talk about banks or passwords stays calm.</p></li>
+        <li class="reveal"><span class="step-n">03</span><h3>AI second opinion</h3><p>At each end of turn an LLM reads the whole call and can raise the alarm on clever scams. It can never lower the rule score, so a scammer saying “this call is safe” can't talk it down.</p></li>
+        <li class="reveal"><span class="step-n">04</span><h3>Speaks up</h3><p>At critical risk ScamShield sounds a chime, ducks the call audio and says a short, specific warning out loud — once per danger, never on repeat — and answers your questions by voice.</p></li>
+      </ol>
+      <p class="limits reveal">ScamShield is a second pair of ears, not a guarantee: it can miss scams and it hears only what the microphone picks up. If in doubt, hang up and call back on a number you trust.</p>
+      <p class="privacy reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        Private by design: audio is streamed to AssemblyAI for live transcription and is not recorded by ScamShield. The transcript lives only in this browser tab until you clear it or close the page. With “Deeper AI check” on, transcript text (never audio) is also sent to Google Gemini; on Google's free tier that text may be kept and reviewed by Google, so switch it off for sensitive calls. API keys never reach your browser.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>ScamShield · AssemblyAI Voice Agent Hackathon 2026</span>
+    <span>Built with AssemblyAI Universal-Streaming</span>
+  </footer>
+
+  <!-- ALARM -->
+  <div class="alarm" id="alarm" hidden>
+    <div class="alarm-vignette"></div>
+    <div class="alarm-card" role="alertdialog" aria-labelledby="alarm-title" aria-describedby="alarm-text">
+      <div class="alarm-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/><path d="m16 2 6 6M22 2l-6 6"/></svg>
+      </div>
+      <p class="alarm-kicker">Critical risk · <span id="alarm-risk">0</span>%</p>
+      <h2 id="alarm-title">Stop — possible scam</h2>
+      <p class="alarm-what" id="alarm-what"></p>
+      <p class="alarm-text" id="alarm-text"></p>
+      <p class="alarm-act" id="alarm-act"></p>
+      <div class="speaking" id="speaking"><span></span><span></span><span></span><span></span><span></span><em>ScamShield is speaking</em></div>
+      <div class="alarm-actions">
+        <button class="btn btn-danger btn-big" id="alarm-hangup">I hung up — show report</button>
+        <button class="link-btn alarm-keep" id="alarm-dismiss">Keep listening</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="modal" id="report" hidden>
+    <div class="modal-card" role="dialog" aria-labelledby="report-title">
+      <button class="modal-x" id="report-close" aria-label="Close">×</button>
+      <div class="report-head">
+        <div class="report-badge" id="report-badge"></div>
+        <div>
+          <p class="muted">After-call report</p>
+          <h2 id="report-title">Call summary</h2>
+        </div>
+      </div>
+      <div class="report-stats" id="report-stats"></div>
+      <div id="report-body"></div>
+      <div class="report-actions">
+        <a class="btn btn-primary" id="share-wa" target="_blank" rel="noopener">Send to family on WhatsApp</a>
+        <a class="btn btn-ghost" id="share-mail">Email</a>
+        <button class="btn btn-ghost" id="share-dl">Download</button>
+        <button class="btn btn-ghost" id="share-copy">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

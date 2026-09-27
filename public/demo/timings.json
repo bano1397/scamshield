@@ -1,0 +1,296 @@
+{
+ "bank": {
+  "duration": 49.65,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "Hello, am I speaking with Mrs. Margaret Collins?",
+    "start": 0.6,
+    "end": 3.84
+   },
+   {
+    "who": "user",
+    "text": "Yes, this is Margaret. Who is calling?",
+    "start": 4.44,
+    "end": 7.24
+   },
+   {
+    "who": "caller",
+    "text": "Good afternoon. This is David from the fraud department at your bank. We noticed a suspicious transaction of nine hundred dollars on your account.",
+    "start": 7.84,
+    "end": 16.45
+   },
+   {
+    "who": "user",
+    "text": "Oh dear, I didn't make any payment like that.",
+    "start": 17.05,
+    "end": 19.93
+   },
+   {
+    "who": "caller",
+    "text": "Don't worry, that's why I'm calling. Your account has been locked for your protection. We need to verify you right now before the payment goes through.",
+    "start": 20.53,
+    "end": 29.2
+   },
+   {
+    "who": "user",
+    "text": "Alright, what do you need?",
+    "start": 29.8,
+    "end": 31.54
+   },
+   {
+    "who": "caller",
+    "text": "We just sent a six digit code to your phone. Please read me the code so I can cancel the transaction immediately.",
+    "start": 32.14,
+    "end": 38.96
+   },
+   {
+    "who": "user",
+    "text": "Let me find my phone. It says four, seven...",
+    "start": 39.56,
+    "end": 42.67
+   },
+   {
+    "who": "caller",
+    "text": "Yes, go on. And please stay on the line, don't hang up or the money will be lost.",
+    "start": 43.27,
+    "end": 48.45
+   }
+  ]
+ },
+ "irs": {
+  "duration": 41.19,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "This is officer James Miller calling from the tax department. Is this Robert?",
+    "start": 0.6,
+    "end": 6.3
+   },
+   {
+    "who": "user",
+    "text": "Yes, speaking.",
+    "start": 6.9,
+    "end": 8.49
+   },
+   {
+    "who": "caller",
+    "text": "Robert, our records show you owe four thousand dollars in unpaid taxes. There is a warrant for your arrest.",
+    "start": 9.09,
+    "end": 17.05
+   },
+   {
+    "who": "user",
+    "text": "What? I always pay my taxes.",
+    "start": 17.65,
+    "end": 20.49
+   },
+   {
+    "who": "caller",
+    "text": "If you do not pay within the next hour, police will come to your house today.",
+    "start": 21.09,
+    "end": 26.08
+   },
+   {
+    "who": "user",
+    "text": "How am I supposed to pay that fast?",
+    "start": 26.68,
+    "end": 29.43
+   },
+   {
+    "who": "caller",
+    "text": "You can settle it with Google Play gift cards. Buy them at any store and read me the numbers on the back. Do not tell anyone about this case.",
+    "start": 30.03,
+    "end": 39.99
+   }
+  ]
+ },
+ "grandson": {
+  "duration": 37.32,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "Grandma? Grandma, it's me, your grandson.",
+    "start": 0.6,
+    "end": 4.52
+   },
+   {
+    "who": "user",
+    "text": "Tommy? Is that you? You sound different.",
+    "start": 5.12,
+    "end": 8.58
+   },
+   {
+    "who": "caller",
+    "text": "I have a cold. Grandma, I'm in trouble. I was in a car accident and the police arrested me.",
+    "start": 9.18,
+    "end": 15.85
+   },
+   {
+    "who": "user",
+    "text": "Oh my goodness, are you hurt?",
+    "start": 16.45,
+    "end": 18.68
+   },
+   {
+    "who": "caller",
+    "text": "I'm okay, but I need bail money, two thousand dollars. My lawyer says you can send it by Western Union.",
+    "start": 19.28,
+    "end": 26.44
+   },
+   {
+    "who": "user",
+    "text": "Should I call your mother?",
+    "start": 27.04,
+    "end": 28.74
+   },
+   {
+    "who": "caller",
+    "text": "No, please don't tell mom and dad. Keep this between us, okay? I need it right now.",
+    "start": 29.34,
+    "end": 36.12
+   }
+  ]
+ },
+ "techsupport": {
+  "duration": 38.54,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "Hello, I'm calling from Microsoft Windows support. Your computer has sent us an error report.",
+    "start": 0.6,
+    "end": 6.92
+   },
+   {
+    "who": "user",
+    "text": "Really? What kind of error?",
+    "start": 7.52,
+    "end": 9.87
+   },
+   {
+    "who": "caller",
+    "text": "Your computer is infected with a dangerous virus and hackers are stealing your files as we speak.",
+    "start": 10.47,
+    "end": 16.54
+   },
+   {
+    "who": "user",
+    "text": "That sounds bad. What should I do?",
+    "start": 17.14,
+    "end": 19.97
+   },
+   {
+    "who": "caller",
+    "text": "I will fix it for you. Please download the AnyDesk app so I can get remote access to your computer.",
+    "start": 20.57,
+    "end": 27.18
+   },
+   {
+    "who": "user",
+    "text": "Okay, I'm opening the browser.",
+    "start": 27.78,
+    "end": 30.24
+   },
+   {
+    "who": "caller",
+    "text": "Good. After that, log in to your online banking so I can check that the hackers didn't take your money.",
+    "start": 30.84,
+    "end": 37.34
+   }
+  ]
+ },
+ "dentist": {
+  "duration": 33.59,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "Hi, this is Sarah from Bright Smile Dental. Am I speaking with Mr. Ahmed?",
+    "start": 0.6,
+    "end": 5.24
+   },
+   {
+    "who": "user",
+    "text": "Yes, hi Sarah.",
+    "start": 5.84,
+    "end": 7.56
+   },
+   {
+    "who": "caller",
+    "text": "I'm just calling to remind you about your cleaning appointment on Thursday at ten in the morning.",
+    "start": 8.16,
+    "end": 12.78
+   },
+   {
+    "who": "user",
+    "text": "Oh right, thank you. Thursday works for me.",
+    "start": 13.38,
+    "end": 17.01
+   },
+   {
+    "who": "caller",
+    "text": "Great. Please bring your insurance card, and arrive ten minutes early to fill in a short form.",
+    "start": 17.61,
+    "end": 22.84
+   },
+   {
+    "who": "user",
+    "text": "Sure, I'll be there. Is there parking?",
+    "start": 23.44,
+    "end": 26.63
+   },
+   {
+    "who": "caller",
+    "text": "Yes, there is free parking behind the building. See you on Thursday, have a nice day.",
+    "start": 27.23,
+    "end": 32.39
+   }
+  ]
+ },
+ "family": {
+  "duration": 37.61,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "Hi Mum, it's Ali. I'm at the bank now, sorting out the car loan.",
+    "start": 0.6,
+    "end": 5.4
+   },
+   {
+    "who": "user",
+    "text": "Oh good. Did they help you?",
+    "start": 6,
+    "end": 8.37
+   },
+   {
+    "who": "caller",
+    "text": "Yes. I'll transfer the money for your rent tonight, so don't worry about it.",
+    "start": 8.97,
+    "end": 14.09
+   },
+   {
+    "who": "user",
+    "text": "Thank you, beta. My phone got a code this morning, is that from you?",
+    "start": 14.69,
+    "end": 19.74
+   },
+   {
+    "who": "caller",
+    "text": "No, that's the bank app on your phone. Never read that code to anyone, even me.",
+    "start": 20.34,
+    "end": 25.99
+   },
+   {
+    "who": "user",
+    "text": "Okay. And I forgot my email password again.",
+    "start": 26.59,
+    "end": 30.46
+   },
+   {
+    "who": "caller",
+    "text": "No problem, I'll help you reset it when I visit on Sunday. Love you, Mum.",
+    "start": 31.06,
+    "end": 36.41
+   }
+  ]
+ }
+}

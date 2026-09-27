@@ -1,0 +1,13 @@
+{
+  "name": "scamshield",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Live voice agent that stops phone scams mid-call, built on AssemblyAI Universal-Streaming.",
+  "scripts": {
+    "dev": "node server.js",
+    "test": "node --test tests/*.test.js",
+    "demo-audio": "node scripts/make-demo-audio.js"
+  },
+  "engines": { "node": ">=18" }
+}
