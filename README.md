@@ -8,7 +8,7 @@ ScamShield streams the call (on speakerphone) to **AssemblyAI Universal-Streamin
 
 Built for the **AssemblyAI Voice Agent Hackathon 2026** (lablab.ai).
 
-**Live demo:** _add Vercel URL_ · **Video:** _add link_
+**Live demo:** https://scamshield-lilac.vercel.app · **Video:** _coming soon_
 
 ![ScamShield](docs/hero.png)
 
