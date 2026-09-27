@@ -1,7 +1,7 @@
 [
   {
     "id": "bank",
-    "title": "Fake bank \u2014 asks for OTP",
+    "title": "Fake bank — asks for OTP",
     "expect": "scam",
     "lines": [
       [
@@ -44,7 +44,7 @@
   },
   {
     "id": "irs",
-    "title": "Fake tax office \u2014 arrest threat",
+    "title": "Fake tax office — arrest threat",
     "expect": "scam",
     "lines": [
       [
@@ -79,7 +79,7 @@
   },
   {
     "id": "grandson",
-    "title": "Grandchild in trouble \u2014 bail money",
+    "title": "Grandchild in trouble — bail money",
     "expect": "scam",
     "lines": [
       [
@@ -114,7 +114,7 @@
   },
   {
     "id": "techsupport",
-    "title": "Fake tech support \u2014 remote access",
+    "title": "Fake tech support — remote access",
     "expect": "scam",
     "lines": [
       [
@@ -148,8 +148,85 @@
     ]
   },
   {
+    "id": "courier",
+    "title": "Fake courier — you ask ScamShield",
+    "expect": "scam",
+    "lines": [
+      [
+        "caller",
+        "Hello, this is DHL customer service. We have a parcel for you held at customs."
+      ],
+      [
+        "user",
+        "Oh, I wasn't expecting a parcel."
+      ],
+      [
+        "caller",
+        "It's a gift from abroad. There is a small customs fee to release it today."
+      ],
+      [
+        "user",
+        "ScamShield, is this real?",
+        null,
+        9
+      ],
+      [
+        "caller",
+        "Madam? To release the parcel, please read me your card number and the security code on the back."
+      ],
+      [
+        "user",
+        "Hmm, let me find my purse."
+      ]
+    ]
+  },
+  {
+    "id": "urdu",
+    "lang": "ur",
+    "title": "Jaali bank call — Urdu / Hindi (beta)",
+    "expect": "scam",
+    "lines": [
+      [
+        "caller",
+        "Main aap ke bank ke fraud department se bol rahi hoon. Aap ke khate se pachas hazar rupay nikalne ki koshish hui hai.",
+        "मैं आपके बैंक के फ्रॉड डिपार्टमेंट से बोल रही हूँ। आपके खाते से पचास हज़ार रुपये निकालने की कोशिश हुई है।",
+        1.5
+      ],
+      [
+        "user",
+        "Ya Allah! Ab main kya karoon?",
+        "या अल्लाह! अब मैं क्या करूँ?",
+        1.5
+      ],
+      [
+        "caller",
+        "Ghabraiye mat. Aap ka khata abhi block ho jayega, is liye jaldi karna hoga.",
+        "घबराइए मत। आपका खाता अभी ब्लॉक हो जाएगा, इसलिए जल्दी करना होगा।",
+        1.5
+      ],
+      [
+        "user",
+        "Theek hai, bataiye.",
+        "ठीक है, बताइए।",
+        1.5
+      ],
+      [
+        "caller",
+        "Aap ke phone par jo OTP code aaya hai, wo mujhe abhi bataiye. Aur kisi ko mat batana.",
+        "आपके फ़ोन पर जो ओटीपी कोड आया है, वो मुझे अभी बताइए। और किसी को मत बताना।",
+        1.5
+      ],
+      [
+        "user",
+        "Ek minute, dekhti hoon.",
+        "एक मिनट, देखती हूँ।",
+        1.5
+      ]
+    ]
+  },
+  {
     "id": "dentist",
-    "title": "Real call \u2014 dentist reminder",
+    "title": "Real call — dentist reminder",
     "expect": "safe",
     "lines": [
       [
@@ -184,7 +261,7 @@
   },
   {
     "id": "family",
-    "title": "Real call \u2014 son talks bank & codes",
+    "title": "Real call — son talks bank & codes",
     "expect": "safe",
     "lines": [
       [

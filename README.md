@@ -18,8 +18,10 @@ Built for the **AssemblyAI Voice Agent Hackathon 2026** (lablab.ai).
 1. Open the live demo and scroll to **Play a real-sounding call**.
 2. Click **Fake bank — asks for OTP**. The call audio plays *and* streams through the real AssemblyAI pipeline — nothing is pre-transcribed.
 3. Watch words appear ~0.5–0.6 s after they're spoken, red flags light up mid-sentence, the meter climb LOW → MEDIUM → CRITICAL, and ScamShield **interrupt out loud**.
-4. Click **Real call — son talks bank & codes**: a genuine call full of "bank", "transfer", "code" and "password". It stays green.
-5. To protect a real call, click **Start protecting**, allow the microphone, and put the call on speaker.
+4. Click **Fake courier — you ask ScamShield**: mid-call the victim says *"ScamShield, is this real?"* and hears the answer out loud — then the card-details request sets off the alarm.
+5. Click **Jaali bank call — Urdu / Hindi (beta)**: the same protection in Urdu/Hindi, with a spoken Urdu warning.
+6. Click **Real call — son talks bank & codes**: a genuine call full of "bank", "transfer", "code" and "password". It stays green.
+7. Click **Try it with your voice**, allow the microphone, and read the scam lines shown on screen.
 
 ## What happens on a call
 | Stage | What ScamShield does |
@@ -30,7 +32,9 @@ Built for the **AssemblyAI Voice Agent Hackathon 2026** (lablab.ai).
 | 🧠 **AI second opinion** | At each end of turn, Gemini reads the call so far (rate-limited to one request every 4 s) and can raise the risk on scams the rules don't know. |
 | ⚖️ **Decide** | LOW / MEDIUM / HIGH / CRITICAL, with a one-line reason: *"Caller is asking for a verification code and is rushing you."* |
 | 🗣️ **Speak** | **HIGH:** one calm spoken caution. **CRITICAL:** chime, call audio ducks, full-screen *Stop — possible scam* with **what** is happening, **why** it's dangerous and **what to do**, plus a short spoken warning. Each danger is announced once; a *new* danger can re-alarm after a 12 s cooldown. |
-| 💬 **Answer** | Say *"ScamShield, is this real?"* (or tap the button) and it answers out loud from the call context. |
+| 💬 **Answer** | Say *"ScamShield, is this real?"* (or tap the button) and it answers out loud from the call context. When risk is high, the answer is always a warning. |
+| ⏱️ **Prove it's live** | The alarm shows *"Flagged 0.5 s after the words were spoken"*, measured from AssemblyAI's own word timestamps. |
+| 🌏 **Urdu / Hindi (beta)** | Switch the call language and ScamShield uses AssemblyAI's multilingual real-time model (`u3-rt-pro`), detects scam requests in Roman Urdu/Hindi ("OTP code mujhe bataiye"), and speaks the warning in Urdu. |
 | 📋 **Report** | Verdict, timeline of red flags with quotes and speakers, next steps, and one-tap sharing with family (WhatsApp / email / download). Stays on the device. |
 
 ## How AssemblyAI is used
@@ -39,6 +43,8 @@ Built for the **AssemblyAI Voice Agent Hackathon 2026** (lablab.ai).
 - **Partial transcripts** drive the instant rule layer, so a red flag can appear before the caller finishes the sentence.
 - **End of turn** (`end_of_turn`) triggers the AI second opinion; **formatted turns** (`format_turns=true`) give clean final text.
 - **Speaker labels** (`speaker_labels=true`) show who said what in the transcript and report.
+- **Multilingual real-time model** (`speech_model=u3-rt-pro`, `language_detection=true`) for Urdu/Hindi calls.
+- **Word timestamps** turn into a real, per-alarm measurement of detection latency.
 - **Keyterm prompting** (`keyterms_prompt`) boosts scam vocabulary — "OTP", "AnyDesk", "gift card", "Western Union", "safe account" — and the wake word "ScamShield".
 - **Resilience:** 10 s connect timeout, automatic reconnect with back-off (and waiting for the network to return), keyterms retried off if refused, clean `Terminate` on hang-up.
 
@@ -49,7 +55,8 @@ Live end-to-end runs of the 6 demo calls through real AssemblyAI streaming (Sep 
 |---|---|
 | Spoken word → on screen (partial transcript, which drives the red flags) | **~0.5–0.6 s** |
 | End of sentence → final formatted turn | **~0.4–0.7 s** without speaker labels, **~0.8–1.4 s** with them (median per call) |
-| Scam demos reaching CRITICAL + spoken warning | **4 / 4** (rules alone are enough — the demo does not depend on the AI) |
+| Spoken word → alarm (shown on screen, English) | **~0.5 s** |
+| Scam demos reaching CRITICAL + spoken warning | **6 / 6** incl. Urdu (rules alone are enough — the demos don't depend on the AI) |
 | Genuine demo calls with any alarm | **0 / 2** |
 
 Detection quality (`node scripts/eval.js`, `--ai` for the full system):
@@ -78,7 +85,8 @@ The one false alarm on blind set 2 ("you can just pay me when the job's done" fr
 - It hears only what the microphone picks up: the call must be on speaker, near the device.
 - Rules alone miss scams phrased without a clear request (e.g. some investment or refund scams); the AI covers many of these but can be slow on the free tier.
 - Speaker labels are shown but not used for scoring — live labels can change mid-call.
-- English only for now. It is a second pair of ears, **not a guarantee**.
+- Urdu/Hindi is **beta**: it works well when speakers pause between turns (as on real calls), but long unbroken monologues may be transcribed late or missed by the multilingual model, and latency is ~1 s. The spoken Urdu warnings are pre-recorded (free macOS Hindi voice), so they cover the main dangers rather than every sentence.
+- It is a second pair of ears, **not a guarantee**.
 
 ## Security
 Strict Content-Security-Policy (no inline scripts; connections only to this site and AssemblyAI), `frame-ancestors 'none'`, microphone allowed for this site only, same-site checks and per-client + per-instance rate limits on the API, request size limits, all transcript and AI text HTML-escaped, and no provider error details returned to the browser. The in-memory rate limits are per serverless instance; for heavy public traffic, add Vercel Firewall rate limiting or a shared store.
@@ -117,9 +125,9 @@ api/        token.js · analyze.js · health.js          (serverless functions)
 lib/        http.js · guard.js                         (JSON helpers, same-site checks, rate limits)
 public/     index.html · css/style.css · demo/ · audio/
 public/js/  app.js (UI, streaming, voice) · rules.js (detector + warning policy) · resample.js · pcm-worklet.js
-tests/      rules · api · platform tests, labelled corpora (own, blind 1, blind 2)
+tests/      rules · api · platform tests, labelled corpora (own, blind 1, blind 2, Urdu)
 scripts/    eval.js (detection report) · make-demo-audio.js
 ```
 
 ## What's next
-Native call-screening integration on Android, Urdu / Hindi / Spanish patterns, and a trusted-contact alert that notifies family in real time.
+Native call-screening integration on Android, more languages (Urdu script, Spanish), and a trusted-contact alert that notifies family in real time.

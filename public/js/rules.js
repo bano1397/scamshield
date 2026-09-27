@@ -24,7 +24,8 @@ export const TACTICS = {
     voice: 'Stop. This may be a scam. Never give a caller your verification code. Hang up.',
     act: 'Do not read out any code. Hang up and call your bank on the number printed on your card.',
     patterns: [
-      new RegExp(String.raw`\b${TO_ME}\b${W(40)}\b${CODE_Q}\s?(?:code|number|pin|password|passcode|digits)\b`, 'i'),
+      // "the security code on the back" of a card is a card-details request (credential), not an OTP
+      new RegExp(String.raw`\b${TO_ME}\b${W(40)}\b${CODE_Q}\s?(?:code|number|pin|password|passcode|digits)\b(?!\s+on the back)`, 'i'),
       new RegExp(String.raw`\b${TO_ME}\b${W(40)}\b(?:code|number|digits|otp|pin)\b${W(50)}\b${CODE_SRC}`, 'i'),
       new RegExp(String.raw`\b${TO_ME}\b${W(12)}\b(?:the|that|this|your)\s(?:\w+\s)?(?:code|otp)\b`, 'i'),
       /\bwhat(?:'s| is| was)?\s(?:the\s)?(?:code|number|otp|pin|digits)\b[^.?!]{0,40}\b(?:receiv|got|get|sent|text|sms|phone|screen|came)/i,
@@ -37,7 +38,7 @@ export const TACTICS = {
     voice: 'Stop. Never share your PIN, password or card details on a call. Hang up.',
     act: 'Share nothing. If you already did, call your bank now using the number on your card.',
     patterns: [
-      new RegExp(String.raw`\b(?:${REQ}|what(?:'s| is))\b${W(40)}\b(?:password|passcode|pin(?: number)?|cvv|cvc|security (?:answer|question)|maiden name|card number|long number on|digits on the back|expiry date|login details|online banking (?:details|password|login)|account number and|social security number|ssn)\b`, 'i'),
+      new RegExp(String.raw`\b(?:${REQ}|what(?:'s| is))\b${W(40)}\b(?:password|passcode|pin(?: number)?|cvv|cvc|security (?:answer|question|code on the back)|maiden name|card number|long number on|digits on the back|expiry date|login details|online banking (?:details|password|login)|account number and|social security number|ssn)\b`, 'i'),
       new RegExp(String.raw`\bpay\b${W(40)}\bwith your (?:card|card number|debit card|credit card)\b`, 'i'),
       /\blog ?in to your (?:online )?bank(?:ing)?\b/i,
     ],
@@ -65,7 +66,7 @@ export const TACTICS = {
     patterns: [
       new RegExp(String.raw`\b(?:pay|settle|clear|cover|send|use|wire|put)\b${W(40)}\b${PAYMETHOD}`, 'i'),
       new RegExp(String.raw`\b(?:buy|get|purchase|pick up|grab)\b[^?!]{0,40}\bgift ?cards?\b[^?!]{0,90}\b(?:send|read|give|tell|text)\b[^?!]{0,15}\b(?:codes?|numbers?|pins?|photos?|pictures?)\b`, 'i'),
-      /\b(?:numbers?|codes?) (?:on|from) the backs?\b|\bscratch (?:off )?(?:the )?(?:backs?|silver|panel)\b/i,
+      /\bnumbers (?:on|from) the backs?\b(?! of (?:your|the) (?:debit |credit |bank )?card)|\bcodes (?:on|from) the backs?\b|\bscratch (?:off )?(?:the )?(?:backs?|silver|panel)\b/i,
       /\b(?:move|transfer|send|put|wire)\b[^.?!]{0,40}\b(?:safe|secure|protected|holding) account\b/i,
       /\b(?:bitcoin|crypto) (?:atm|machine|kiosk)\b|\bto this (?:wallet|crypto address)\b/i,
     ],
@@ -168,6 +169,12 @@ export const TACTICS = {
     explain: 'Your date of birth and address are exactly what scammers need to pass bank security checks.',
     patterns: [/\b(?:confirm|verify|tell me|give me|what is|what's)\b[^.?!]{0,30}\b(?:date of birth|birthday|home address|mother'?s maiden name|national insurance|account details)\b/i],
   },
+  fee_pretext: {
+    label: 'Mentions a fee to release something', critical: false, weight: 15, hidden: true,
+    does: 'says you must pay a fee to release something',
+    explain: 'Fake courier and customs calls invent a small "release fee" to get your card details.',
+    patterns: [/\b(?:customs|release|redelivery|re-delivery|clearance|processing|handling) (?:fee|charge|duty)\b|\bfee to release\b/i],
+  },
   pretext: {
     label: 'Says they need to "verify" you', critical: false, weight: 10, hidden: true,
     does: 'says they need to "verify" you',
@@ -175,6 +182,32 @@ export const TACTICS = {
     patterns: [/\b(?:need|have|want) to (?:verify|confirm|check) (?:your|some|something|a few|you)\b/i],
   },
 };
+
+// Roman Urdu / Hindi (as transcribed live by AssemblyAI's multilingual streaming model).
+// Same principle as English: a *request* aimed at the listener, never negated ("mat batana").
+const UR_ASK = String.raw`(?:batao|batayiye|bataiye|bataein|batayen|bata do|bata dijiye|bolo|boliye|sunao|bhejo|bhej do|bhejiye|bhej dijiye|de do|dijiye|share karo|send karo|likh do)`;
+const UR_NOT = String.raw`(?:(?!\b(?:mat|na|nahi|nahin|kabhi|never)\b)[^.?!])`;
+const UR = {
+  otp: [new RegExp(String.raw`\b(?:otp|code|pin|verification)\b${UR_NOT}{0,45}\b${UR_ASK}`, 'i')],
+  credential: [new RegExp(String.raw`\b(?:password|atm pin|cvv|card (?:ka )?number|card number|pin code)\b${UR_NOT}{0,40}\b${UR_ASK}`, 'i')],
+  remote: [/\b(?:app|application|software)\b[^.?!]{0,25}\b(?:download|install)\s(?:karo|kariye|karein|kijiye|kar lo|kar lein)\b[^.?!]{0,40}\b(?:taake|ta ke|taki|main|mein)\b/i],
+  unusual_payment: [/\b(?:gift ?cards?|bitcoin|crypto)\b[^.?!]{0,40}\b(?:bhejo|bhej do|kharido|khareed|le lo|transfer|jama)\b/i],
+  money_request: [
+    new RegExp(String.raw`\b(?:paise|paisa|pese|raqam|rupay|rupaye|rupees|amount|fee|fees|jurmana)\b${UR_NOT}{0,35}\b(?:bhejo|bhej do|bhejiye|bhej dijiye|transfer (?:karo|kar do|kariye|kijiye)|jama (?:karo|karwao|kariye)|de do|dijiye)`, 'i'),
+    /\b(?:easy ?paisa|jazz ?cash|sadapay|nayapay)\b[^.?!]{0,35}\b(?:bhejo|bhej do|bhejiye|transfer|kar do|karo)\b/i,
+  ],
+  impersonation: [
+    /\b(?:main|mein|hum)\b[^.?!]{0,30}\b(?:bank|police|thane|fia|fbr|nadra|pta|court|jazz|telenor|zong|ufone|bisp|benazir|customs|income tax)\b[^.?!]{0,20}\b(?:se|say)\s(?:bol|baat)/i,
+    /\b(?:bank|police|fia|fbr|nadra|pta|bisp)\s(?:se|say)\s(?:bol raha|bol rahi|bol rahe|baat kar)/i,
+  ],
+  account_threat: [/\b(?:khat[aei]|khate|account|card|sim|number|connection)\b[^.?!]{0,25}\b(?:band|bandh|block(?:ed)?)\s?(?:ho|kar|hojayega|ho jayega|ho gaya|hoga|kar diya)/i],
+  urgency: [/\b(?:foran|fauran|turant|jaldi se|jaldi karo|jaldi karna|isi waqt|abhi ke abhi)\b/i],
+  threat: [/\b(?:giraftar|griftar|arrest|warrant|jail|jel)\b[^.?!]{0,30}\b(?:ho jaoge|ho jayenge|kar lenge|karenge|jana parega|hoga)\b|\bpolice (?:aa jayegi|ayegi|aayegi|aa rahi)\b/i],
+  secrecy: [/\b(?:kisi ko|kisi se|ghar walon ko|ghar walon se|family ko)\s(?:bhi\s)?(?:mat|na|nahi)\s(?:batana|bataana|bataiye|batayen|batao|kehna|bolna)\b|\bphone (?:mat|na) (?:kaatna|katna|band karna|rakhna)\b/i],
+  family_emergency: [/\b(?:main|mein)\s(?:musibat|mushkil|hospital|jail|thane)\s(?:mein|me)\b|\bmera (?:accident|phone (?:kho|gum) gaya)\b|\b(?:ye|yeh) mera naya number\b/i],
+  too_good: [/\b(?:inaam|inam|lucky draw|prize|qurandazi)\b[^.?!]{0,30}\b(?:nikla|nikal|jeeta|jeet|lag gaya|mila)\b/i],
+};
+for (const [k, list] of Object.entries(UR)) TACTICS[k].patterns.push(...list);
 
 // Pairs that are far more dangerous together than apart.
 const PRESSURE = ['urgency', 'account_threat', 'threat', 'impersonation', 'secrecy', 'family_emergency', 'too_good'];
@@ -230,7 +263,7 @@ export function scoreCounts(counts) {
   return { risk, level: levelFor(risk), tactics: found, critical, summary: summarize(found) };
 }
 
-const PRIORITY = ['otp', 'credential', 'remote', 'unusual_payment', 'money_request', 'family_emergency', 'threat', 'secrecy', 'too_good', 'personal_info', 'impersonation', 'account_threat', 'urgency', 'pretext'];
+const PRIORITY = ['otp', 'credential', 'remote', 'unusual_payment', 'money_request', 'family_emergency', 'threat', 'secrecy', 'too_good', 'personal_info', 'fee_pretext', 'impersonation', 'account_threat', 'urgency', 'pretext'];
 export const byPriority = (tactics) => [...tactics].sort((a, b) => PRIORITY.indexOf(a) - PRIORITY.indexOf(b));
 
 export function summarize(tactics) {

@@ -1,0 +1,8 @@
+{
+  "otp": { "text": "Rukiye! Yeh dhoka ho sakta hai. Kisi ko bhi OTP code mat bataiye. Phone band kar dijiye.", "speak": "रुकिए! यह धोखा हो सकता है। किसी को भी ओटीपी कोड मत बताइए। फ़ोन बंद कर दीजिए।" },
+  "credential": { "text": "Rukiye! Apna PIN, password ya card number kisi ko mat bataiye. Phone band kar dijiye.", "speak": "रुकिए! अपना पिन, पासवर्ड या कार्ड नंबर किसी को मत बताइए। फ़ोन बंद कर दीजिए।" },
+  "remote": { "text": "Rukiye! Koi bhi app download mat kijiye. Yeh dhoka hai. Phone band kar dijiye.", "speak": "रुकिए! कोई भी ऐप डाउनलोड मत कीजिए। यह धोखा है। फ़ोन बंद कर दीजिए।" },
+  "unusual_payment": { "text": "Rukiye! Koi bank ya hukumat gift card ya crypto nahi maangti. Yeh dhoka hai. Phone band kar dijiye.", "speak": "रुकिए! कोई बैंक या सरकार गिफ्ट कार्ड या क्रिप्टो नहीं माँगती। यह धोखा है। फ़ोन बंद कर दीजिए।" },
+  "generic": { "text": "Rukiye! Is call mein dhoke ke kai nishaan hain. Kuch mat bataiye, paise mat bhejiye. Phone band kar dijiye.", "speak": "रुकिए! इस कॉल में धोखे के कई निशान हैं। कुछ मत बताइए, पैसे मत भेजिए। फ़ोन बंद कर दीजिए।" },
+  "caution": { "text": "Dhyan dijiye. Is call mein dhoke ke kuch nishaan hain. Koi code, password ya paise mat dijiye.", "speak": "ध्यान दीजिए। इस कॉल में धोखे के कुछ निशान हैं। कोई कोड, पासवर्ड या पैसे मत दीजिए।" }
+}

@@ -199,6 +199,88 @@
    }
   ]
  },
+ "courier": {
+  "duration": 35.74,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "Hello, this is DHL customer service. We have a parcel for you held at customs.",
+    "start": 0.6,
+    "end": 6.22
+   },
+   {
+    "who": "user",
+    "text": "Oh, I wasn't expecting a parcel.",
+    "start": 6.82,
+    "end": 9.49
+   },
+   {
+    "who": "caller",
+    "text": "It's a gift from abroad. There is a small customs fee to release it today.",
+    "start": 10.09,
+    "end": 14.35
+   },
+   {
+    "who": "user",
+    "text": "ScamShield, is this real?",
+    "start": 14.95,
+    "end": 17.04
+   },
+   {
+    "who": "caller",
+    "text": "Madam? To release the parcel, please read me your card number and the security code on the back.",
+    "start": 26.04,
+    "end": 31.56
+   },
+   {
+    "who": "user",
+    "text": "Hmm, let me find my purse.",
+    "start": 32.16,
+    "end": 34.54
+   }
+  ]
+ },
+ "urdu": {
+  "duration": 32.88,
+  "lines": [
+   {
+    "who": "caller",
+    "text": "Main aap ke bank ke fraud department se bol rahi hoon. Aap ke khate se pachas hazar rupay nikalne ki koshish hui hai.",
+    "start": 0.6,
+    "end": 7.93
+   },
+   {
+    "who": "user",
+    "text": "Ya Allah! Ab main kya karoon?",
+    "start": 9.43,
+    "end": 11.4
+   },
+   {
+    "who": "caller",
+    "text": "Ghabraiye mat. Aap ka khata abhi block ho jayega, is liye jaldi karna hoga.",
+    "start": 12.9,
+    "end": 17.89
+   },
+   {
+    "who": "user",
+    "text": "Theek hai, bataiye.",
+    "start": 19.39,
+    "end": 20.66
+   },
+   {
+    "who": "caller",
+    "text": "Aap ke phone par jo OTP code aaya hai, wo mujhe abhi bataiye. Aur kisi ko mat batana.",
+    "start": 22.16,
+    "end": 27.8
+   },
+   {
+    "who": "user",
+    "text": "Ek minute, dekhti hoon.",
+    "start": 29.3,
+    "end": 30.78
+   }
+  ]
+ },
  "dentist": {
   "duration": 33.59,
   "lines": [

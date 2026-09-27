@@ -86,3 +86,11 @@ test('AI tactic keys match the visible rule tactics', async () => {
   const { TACTICS } = await import('../public/js/rules.js');
   assert.deepEqual([...TACTIC_KEYS].sort(), Object.keys(TACTICS).filter((k) => !TACTICS[k].hidden).sort());
 });
+
+test('every Urdu warning line has a recorded clip', () => {
+  const v = JSON.parse(readFileSync(join(root, 'public/demo/voice-ur.json'), 'utf8'));
+  for (const k of ['otp', 'credential', 'remote', 'unusual_payment', 'generic', 'caution']) {
+    assert.ok(v[k]?.text && v[k]?.speak, k);
+    assert.ok(statSync(join(root, `public/audio/voice/ur-${k}.wav`)).size > 50_000, k);
+  }
+});

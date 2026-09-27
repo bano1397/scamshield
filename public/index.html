@@ -48,6 +48,10 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg>
             Play a demo scam call
           </a>
+          <button class="btn btn-ghost btn-try">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 11a7 7 0 0 1-14 0"/></svg>
+            Try it with your voice
+          </button>
         </div>
         <ul class="hero-stats">
           <li><b>0</b><span>recordings or transcripts kept by ScamShield</span></li>
@@ -109,6 +113,11 @@
             <span>“Is this real?”</span>
           </button>
         </div>
+        <div class="lang" role="radiogroup" aria-label="Call language">
+          <span class="lang-label">Call language</span>
+          <label><input type="radio" name="lang" value="en" checked /><span>English</span></label>
+          <label><input type="radio" name="lang" value="ur" /><span>Urdu / Hindi <em>beta</em></span></label>
+        </div>
         <label class="switch">
           <input type="checkbox" id="ai-toggle" checked />
           <span class="track" aria-hidden="true"><span class="thumb"></span></span>
@@ -145,7 +154,7 @@
       <div class="section-head reveal">
         <span class="eyebrow">Try it in 30 seconds</span>
         <h2>Play a real-sounding call</h2>
-        <p>Each call streams through the same live AssemblyAI pipeline as a microphone. One of them is a genuine call — watch ScamShield stay calm.</p>
+        <p>Each call streams through the same live AssemblyAI pipeline as a microphone. Two are genuine calls — watch ScamShield stay calm. Or <button class="link-btn inline btn-try" type="button">try it with your own voice</button>.</p>
       </div>
       <div class="demo-grid" id="demo-grid"></div>
     </section>
@@ -187,6 +196,7 @@
       <p class="alarm-what" id="alarm-what"></p>
       <p class="alarm-text" id="alarm-text"></p>
       <p class="alarm-act" id="alarm-act"></p>
+      <p class="alarm-latency" id="alarm-latency" hidden></p>
       <div class="speaking" id="speaking"><span></span><span></span><span></span><span></span><span></span><em>ScamShield is speaking</em></div>
       <div class="alarm-actions">
         <button class="btn btn-danger btn-big" id="alarm-hangup">I hung up — show report</button>

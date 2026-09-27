@@ -17,6 +17,8 @@ const VOICES = {
   techsupport: { caller: 'Rishi', user: 'Shelley (English (US))' },
   dentist: { caller: 'Samantha', user: 'Eddy (English (US))' },
   family: { caller: 'Rishi', user: 'Flo (English (UK))' },
+  courier: { caller: 'Daniel', user: 'Grandma (English (UK))' },
+  urdu: { caller: 'Lekha', user: 'Lekha' },
 };
 
 function wav(pcm) {
@@ -35,13 +37,16 @@ try {
     const parts = [Buffer.alloc(GAP * 2)];
     let samples = GAP;
     const lines = [];
-    call.lines.forEach(([who, text], i) => {
+    // line = [speaker, display text, optional text to speak (e.g. Devanagari for the Hindi voice), optional pause after (s)]
+    call.lines.forEach(([who, text, spoken, pause], i) => {
       const aiff = join(tmp, `${call.id}-${i}.aiff`);
-      execFileSync('say', ['-v', VOICES[call.id][who], '-r', '175', '-o', aiff, text]);
+      const rate = call.lang === 'ur' ? (who === 'user' ? '165' : '175') : '175';
+      execFileSync('say', ['-v', VOICES[call.id][who], '-r', rate, '-o', aiff, spoken || text]);
       const raw = execFileSync('ffmpeg', ['-v', 'error', '-i', aiff, '-ac', '1', '-ar', String(RATE), '-f', 's16le', '-'], { maxBuffer: 1 << 26 });
       lines.push({ who, text, start: +(samples / RATE).toFixed(2), end: +((samples + raw.length / 2) / RATE).toFixed(2) });
-      parts.push(raw, Buffer.alloc(GAP * 2));
-      samples += raw.length / 2 + GAP;
+      const gap = pause ? Math.round(RATE * pause) : GAP;
+      parts.push(raw, Buffer.alloc(gap * 2));
+      samples += raw.length / 2 + gap;
     });
     parts.push(Buffer.alloc(GAP * 2));
     writeFileSync(join(root, `public/audio/${call.id}.wav`), wav(Buffer.concat(parts)));
@@ -51,4 +56,19 @@ try {
   writeFileSync(join(root, 'public/demo/timings.json'), JSON.stringify(timings, null, 1));
 } finally {
   rmSync(tmp, { recursive: true, force: true });
+}
+
+// Spoken Urdu/Hindi warnings, pre-recorded so they work in every browser (no Urdu TTS needed).
+const UR_VOICE = JSON.parse(readFileSync(join(root, 'public/demo/voice-ur.json')));
+const vdir = mkdtempSync(join(tmpdir(), 'ssv-'));
+try {
+  for (const [key, { speak }] of Object.entries(UR_VOICE)) {
+    const aiff = join(vdir, `${key}.aiff`);
+    execFileSync('say', ['-v', 'Lekha', '-r', '170', '-o', aiff, speak]);
+    const raw = execFileSync('ffmpeg', ['-v', 'error', '-i', aiff, '-ac', '1', '-ar', String(RATE), '-f', 's16le', '-'], { maxBuffer: 1 << 26 });
+    writeFileSync(join(root, `public/audio/voice/ur-${key}.wav`), wav(raw));
+    console.log(`voice ur-${key}: ${(raw.length / 2 / RATE).toFixed(1)}s`);
+  }
+} finally {
+  rmSync(vdir, { recursive: true, force: true });
 }

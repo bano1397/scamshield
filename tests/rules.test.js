@@ -154,3 +154,21 @@ test('a scammer cannot make the spoken answer reassuring when risk is high', () 
   assert.equal(safeAnswer('low', 'This seems like a normal call.', rule), 'This seems like a normal call.');
   assert.equal(safeAnswer('low', '', rule), rule);
 });
+
+// ---------- Urdu / Hindi (beta) ----------
+import { URDU } from './urdu.js';
+for (const c of URDU) {
+  test(`[urdu ${c.expect}] ${c.name}`, () => {
+    const r = scoreCall(c.turns);
+    assert.equal(bucket(r.level), c.expect, `risk=${r.risk} tactics=${r.tactics}`);
+  });
+}
+
+test('courier demo as AssemblyAI transcribes it: caution before the ask, critical at the card request', () => {
+  const t = new RiskTracker();
+  t.addFinal("Hello, this is DHL customer service. We have a parcel for you held at customs. Oh, I wasn't expecting a parcel.");
+  assert.equal(t.addFinal("It's a gift from abroad. There is a small customs fee to release it today. ScamShield, is this real?").level, 'medium');
+  const r = t.addFinal('Madam, to release the parcel, please read me your card number and the security code on the back.');
+  assert.equal(r.level, 'critical');
+  assert.ok(r.critical.includes('credential') && !r.critical.includes('unusual_payment') && !r.critical.includes('otp'), r.critical.join());
+});

@@ -6,6 +6,7 @@ const RATE = 16000;
 const CHUNK = 800; // 50 ms of 16 kHz audio per WebSocket message (AssemblyAI accepts 50–1000 ms)
 const MAX_DOM_TURNS = 300; // keep long calls light
 const RECONNECT_DELAYS = [300, 1500, 4000];
+const KEYTERMS_UR = ['ScamShield', 'OTP', 'JazzCash', 'Easypaisa', 'FIA', 'NADRA', 'FBR', 'ATM PIN', 'AnyDesk'];
 const KEYTERMS = ['ScamShield', 'OTP', 'one-time code', 'verification code', 'PIN', 'CVV', 'gift card', 'Google Play', 'AnyDesk', 'TeamViewer', 'Western Union', 'bitcoin', 'wire transfer', 'safe account', 'warrant', 'bail', 'fraud department', 'remote access'];
 const WAKE = /\b(?:scam ?shield|skim ?shield|scan ?shield)\b[,.!?]?\s*(.*)$/i;
 const VISIBLE = Object.keys(TACTICS).filter((k) => !TACTICS[k].hidden);
@@ -44,7 +45,8 @@ const SHIELD_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 
 // ---------------- state ----------------
 const health = { assemblyai: false, llm: false };
-const prefs = { ai: true };
+const prefs = { ai: true, lang: 'en' };
+let voiceUr = {};
 let calls = [];
 let timings = {};
 let busy = false; // blocks overlapping start/stop from rapid clicks
@@ -52,7 +54,7 @@ const S = freshState();
 
 function freshState() {
   return {
-    running: false, source: null, demoId: null, tracker: new RiskTracker(), turns: [],
+    running: false, source: null, demoId: null, lang: 'en', heardAt: 0, tracker: new RiskTracker(), turns: [],
     partial: '', partialId: null, turnEls: new Map(), rule: null,
     aiRisk: null, aiReason: '', aiTactics: [], target: 0, shown: 0, peak: 0, level: 'low',
     found: new Map(), warned: new Set(), lastWarnAt: 0, lastWarning: null,
@@ -129,6 +131,7 @@ function setRunningUI(on, label) {
   b.classList.toggle('recording', on);
   b.querySelector('span').textContent = on ? 'End call & see report' : 'Start protecting';
   $('#btn-ask').disabled = !on;
+  document.querySelectorAll('input[name="lang"]').forEach((r) => (r.disabled = on));
   const tag = $('#source-tag');
   tag.textContent = label || (on ? 'Live' : 'Idle');
   tag.classList.toggle('live', on);
@@ -232,7 +235,7 @@ function onFinal(id, text, speaker) {
   S.tracker.addFinal(text);
   updateRisk(text);
 
-  const wake = S.source === 'mic' && text.match(WAKE);
+  const wake = text.match(WAKE);
   if (wake) {
     existing?.classList.add('you');
     ask(wake[1] || 'Is this call real?', false);
@@ -284,6 +287,10 @@ function maybeAlarm() {
     const w = warningFor(d.lead, all);
     if (!d.lead && S.aiReason) w.what = S.aiReason;
     if (S.stats.alarmAtMs == null) S.stats.alarmAtMs = Math.round(performance.now() - S.startedAt);
+    const lat = S.heardAt ? (performance.now() - S.heardAt) / 1000 : null;
+    w.latency = lat != null && lat > 0 && lat < 15 ? lat : null;
+    if (w.latency != null && S.stats.flagLatency == null) S.stats.flagLatency = w.latency;
+    w.clip = d.lead && voiceUr[d.lead] ? d.lead : 'generic';
     S.lastWarning = w;
     showAlarm(w);
     return;
@@ -291,7 +298,7 @@ function maybeAlarm() {
   if (decideCaution({ level: S.level, warned: S.warned })) {
     S.warned.add('caution');
     chime(true);
-    speak(CAUTION_VOICE, { caution: true });
+    speak(CAUTION_VOICE, { caution: true, clip: 'caution' });
   }
 }
 
@@ -407,13 +414,38 @@ let speechGen = 0;
 function hush() {
   speechGen++;
   if (canSpeak) speechSynthesis.cancel();
+  if (clipEl) { try { clipEl.pause(); } catch {} clipEl = null; }
 }
-function speak(text, { alert = false, caution = false } = {}) {
-  agentBubble(text, alert, caution);
-  if (!canSpeak) return Promise.resolve();
+function speak(text, { alert = false, caution = false, clip = null } = {}) {
+  // Urdu/Hindi calls get a pre-recorded Urdu/Hindi warning (works in every browser, no Urdu TTS needed)
+  const ur = S.lang === 'ur' && clip && voiceUr[clip];
+  agentBubble(ur ? voiceUr[clip].text : text, alert, caution);
+  if (!ur && !canSpeak) return Promise.resolve();
   const gen = speechGen;
-  speechChain = speechChain.then(() => (gen === speechGen ? say(text) : null));
+  speechChain = speechChain.then(() => (gen !== speechGen ? null : ur ? playClip(clip) : say(text)));
   return speechChain;
+}
+
+let clipEl = null;
+function playClip(clip) {
+  return new Promise((resolve) => {
+    const a = new Audio(`/audio/voice/ur-${clip}.wav`);
+    clipEl = a;
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      S.speaking = false;
+      duck(false);
+      $('#speaking').classList.add('quiet');
+      resolve();
+    };
+    a.onplay = () => { S.speaking = true; duck(true); $('#speaking').classList.remove('quiet'); };
+    a.onended = done;
+    a.onerror = done;
+    a.play().catch(done);
+    setTimeout(done, 15000);
+  });
 }
 
 function duck(on) {
@@ -466,13 +498,16 @@ function showAlarm(w) {
   $('#alarm-text').textContent = w.why;
   $('#alarm-act').textContent = w.act;
   $('#alarm-risk').textContent = Math.round(S.target);
-  $('#speaking').hidden = !canSpeak;
+  const latEl = $('#alarm-latency');
+  latEl.hidden = w.latency == null;
+  if (w.latency != null) latEl.textContent = `Flagged ${w.latency.toFixed(1)} s after the words were spoken · live AssemblyAI streaming`;
+  $('#speaking').hidden = !canSpeak && S.lang !== 'ur';
   const wasOpen = !$('#alarm').hidden;
   $('#alarm').hidden = false;
   if (!wasOpen) $('#alarm-hangup').focus({ preventScroll: true });
   if (navigator.vibrate) navigator.vibrate([300, 120, 300]);
   chime();
-  speak(w.voice, { alert: true });
+  speak(w.voice, { alert: true, clip: w.clip });
 }
 
 function hideAlarm() {
@@ -518,7 +553,9 @@ async function openStream(withKeyterms = true) {
   if (!r.ok || !j.token) throw new Error(j.error || 'Could not start live transcription.');
   // speaker_labels: live diarization, so the transcript and report show who said what
   const params = new URLSearchParams({ sample_rate: RATE, encoding: 'pcm_s16le', format_turns: 'true', speaker_labels: 'true', token: j.token });
-  if (withKeyterms) params.set('keyterms_prompt', JSON.stringify(KEYTERMS));
+  // Urdu/Hindi calls use AssemblyAI's multilingual real-time model, which returns Roman Urdu/Hindi
+  if (S.lang === 'ur') { params.set('speech_model', 'u3-rt-pro'); params.set('language_detection', 'true'); }
+  if (withKeyterms) params.set('keyterms_prompt', JSON.stringify(S.lang === 'ur' ? KEYTERMS_UR : KEYTERMS));
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(`wss://streaming.assemblyai.com/v3/ws?${params}`);
     ws.binaryType = 'arraybuffer';
@@ -529,7 +566,7 @@ async function openStream(withKeyterms = true) {
       let m;
       try { m = JSON.parse(e.data); } catch { return; }
       if (m.type === 'Begin') { begun = true; clearTimeout(timer); resolve(ws); }
-      else if (m.type === 'Turn' && S.ws === ws) handleTurn(m);
+      else if (m.type === 'Turn' && S.ws === ws) handleTurn(m, ws);
       else if (m.error) serverError = String(m.error);
     };
     ws.onerror = () => {};
@@ -581,8 +618,14 @@ async function reconnect(e) {
   }
 }
 
-function handleTurn(m) {
+function handleTurn(m, ws) {
   const id = 'a' + m.turn_order;
+  // AssemblyAI word timestamps are relative to the first audio we sent on this socket, so
+  // t0 + word.end is the wall-clock moment the word was spoken (audio is streamed in real time)
+  if (ws?.__t0 && Array.isArray(m.words) && m.words.length) {
+    const end = Math.max(...m.words.map((w) => Number(w.end) || 0));
+    if (end) S.heardAt = Math.max(S.heardAt, ws.__t0 + end);
+  }
   const live = Array.isArray(m.words) && m.words.length ? m.words.map((w) => w.text).join(' ') : m.transcript;
   if (m.end_of_turn && m.turn_is_formatted) {
     clearTimeout(S.pendingEot.get(id));
@@ -606,7 +649,10 @@ function makeSender() {
       for (let i = 0; i < int16.length; i++) {
         buf[n++] = int16[i];
         if (n === CHUNK) {
-          if (S.ws && S.ws.readyState === 1) S.ws.send(buf.buffer);
+          if (S.ws && S.ws.readyState === 1) {
+            if (!S.ws.__t0) S.ws.__t0 = performance.now() - (CHUNK / RATE) * 1000;
+            S.ws.send(buf.buffer);
+          }
           // a socket stuck in CLOSING may not fire onclose for a long time — don't wait for it
           else if (S.ws && S.ws.readyState > 1 && S.running && !S.reconnecting && !S.closing) reconnect({ code: 'closed' });
           buf = new Int16Array(CHUNK);
@@ -618,7 +664,7 @@ function makeSender() {
 }
 
 // ---------------- sessions ----------------
-async function beginSession(source, demoId, label) {
+async function beginSession(source, demoId, label, lang) {
   if (S.running) await stopSession(false);
   hush();
   hideAlarm();
@@ -626,6 +672,8 @@ async function beginSession(source, demoId, label) {
   Object.assign(S, freshState());
   S.source = source;
   S.demoId = demoId;
+  S.lang = lang || prefs.lang;
+  document.body.classList.toggle('lang-ur', S.lang === 'ur');
   resetUI();
   $('#console').scrollIntoView({ behavior: 'smooth', block: 'start' });
   S.audioCtx = new AudioContext();
@@ -637,7 +685,20 @@ async function beginSession(source, demoId, label) {
   setRunningUI(true, label);
 }
 
-async function startLive() {
+const TRY_SCRIPT = {
+  en: ['Hello, this is the fraud department at your bank.', 'Your account has been locked for your protection.', 'Please read me the six digit code we just sent to your phone.'],
+  ur: ['Main aap ke bank ke fraud department se bol raha hoon.', 'Aap ka khata abhi block ho jayega, jaldi karna hoga.', 'Jo OTP code aap ke phone par aaya hai, wo mujhe bataiye.'],
+};
+function addTryScript() {
+  const lines = TRY_SCRIPT[S.lang] || TRY_SCRIPT.en;
+  const d = document.createElement('div');
+  d.className = 'try-script';
+  d.innerHTML = `<b>Try it: read these lines out loud, like a scammer would</b><ol>${lines.map((l) => `<li>“${esc(l)}”</li>`).join('')}</ol><small>Then ask: <em>“ScamShield, is this real?”</em> · a pause of about a second between sentences helps.</small>`;
+  $('#transcript').appendChild(d);
+  scrollTranscript();
+}
+
+async function startLive(opts = {}) {
   if (busy) return;
   if (S.running) return stopSession(true);
   if (!health.assemblyai) return toast('Live listening needs the speech service, which is not available right now. Try a demo call.', true);
@@ -663,6 +724,7 @@ async function startLive() {
       return stopSession(false);
     }
     addSys('Protecting this call · put it on speaker');
+    if (opts.script) addTryScript();
     setPills();
     const sender = makeSender();
     const src = S.audioCtx.createMediaStreamSource(stream);
@@ -713,7 +775,7 @@ async function startDemo(id) {
     let pcm;
     try { pcm = await loadWav(id); } catch { return toast('Could not load the demo audio. Check your connection.', true); }
     const realStt = health.assemblyai;
-    await beginSession('demo', id, realStt ? 'Demo · live AssemblyAI' : 'Demo · simulated transcript');
+    await beginSession('demo', id, realStt ? 'Demo · live AssemblyAI' : 'Demo · simulated transcript', call.lang || 'en');
     addSys(`Incoming call · ${call.title}`);
     if (realStt) {
       try {
@@ -881,6 +943,7 @@ function showReportModal() {
   body += r.level === 'low'
     ? `<h3>All clear</h3><p class="report-reason">No scam warning signs were detected on this call.</p>`
     : `<h3>What to do next</h3><ol class="next">${nextSteps().map((x) => `<li>${esc(x)}</li>`).join('')}</ol>`;
+  if (S.stats.flagLatency != null) body += `<p class="report-note">First warning: ${S.stats.flagLatency.toFixed(1)} s after the words were spoken (measured from AssemblyAI word timestamps).</p>`;
   body += `<p class="report-note">Reports stay on this device. Nothing is saved on a server.</p>`;
   $('#report-body').innerHTML = body;
   const txt = reportText();
@@ -892,8 +955,17 @@ function showReportModal() {
 
 // ---------------- wiring ----------------
 function wire() {
-  $('#btn-live').addEventListener('click', startLive);
-  $('#hero-live').addEventListener('click', startLive);
+  $('#btn-live').addEventListener('click', () => startLive());
+  $('#hero-live').addEventListener('click', () => startLive());
+  document.querySelectorAll('.btn-try').forEach((b) => b.addEventListener('click', () => startLive({ script: true })));
+  document.querySelectorAll('input[name="lang"]').forEach((r) => {
+    r.checked = r.value === prefs.lang;
+    r.addEventListener('change', () => {
+      if (!r.checked) return;
+      prefs.lang = r.value;
+      store.set('ss-lang', prefs.lang);
+    });
+  });
   $('#btn-ask').addEventListener('click', () => ask('Is this call real?'));
   $('#btn-clear').addEventListener('click', clearSession);
   $('#alarm-dismiss').addEventListener('click', hideAlarm);
@@ -910,6 +982,8 @@ function wire() {
   $('#share-copy').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(reportText()); toast('Report copied'); } catch { toast('Copy failed — use Download instead.', true); }
   });
+  prefs.lang = store.get('ss-lang') === 'ur' ? 'ur' : 'en';
+  document.querySelectorAll('input[name="lang"]').forEach((r) => (r.checked = r.value === prefs.lang));
   const toggle = $('#ai-toggle');
   prefs.ai = store.get('ss-ai') !== 'off';
   toggle.checked = prefs.ai;
@@ -935,7 +1009,8 @@ async function init() {
   wire();
   requestAnimationFrame(tick);
   const get = (u) => fetch(u, { signal: AbortSignal.timeout(8000) }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
-  const [h, c, t] = await Promise.allSettled([get('/api/health'), get('/demo/calls.json'), get('/demo/timings.json')]);
+  const [h, c, t, v] = await Promise.allSettled([get('/api/health'), get('/demo/calls.json'), get('/demo/timings.json'), get('/demo/voice-ur.json')]);
+  voiceUr = v.value || {};
   health.assemblyai = !!h.value?.assemblyai;
   health.llm = !!h.value?.llm;
   calls = c.value || [];
